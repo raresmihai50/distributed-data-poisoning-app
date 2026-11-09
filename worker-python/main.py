@@ -12,8 +12,9 @@ Rol în proiect:
 """
 
 import io
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 
@@ -27,6 +28,12 @@ app = FastAPI(
     description="Motor Adversarial bazat pe Ensemble Loss (ResNet50 + MobileNetV3) și Momentum",
     version="1.2.0"
 )
+
+# Handler pentru afișarea detaliată în consolă a oricărei erori 422 de validare
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print("❌ EROARE VALIDARE 422 DETALIATĂ:", exc.errors())
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
 # Activăm CORS (Cross-Origin Resource Sharing)
 # Permite apelurile HTTP din frontend-ul Svelte 5 (port 5173) și din orchestratorul Java (port 8080)
