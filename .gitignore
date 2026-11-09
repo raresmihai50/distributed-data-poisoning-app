@@ -18,3 +18,6 @@ Thumbs.db
 venv/
 __pycache__/
 *.pyc
+
+#Random files
+GIT_CHEAT_SHEET.md
